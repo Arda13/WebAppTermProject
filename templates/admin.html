@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Admin</title>
+</head>
+<style>
+	body{
+		font-family: 'Quicksand', sans-serif;
+		font-size: 110%;
+		font-weight: bold;
+		color: white;
+		background-image: url('static/Images/background.jpg');
+		background-color: rgba(0,0,0,0.6);
+		background-blend-mode: overlay;
+		background-size: cover;
+	}
+	.event-card{
+	border:1px solid #990000;
+	margin-top: 40px;
+	margin-right: 17px;
+	height: 300px;
+	width: 300px;
+	text-align: center;
+	border-radius:20px; 
+	background-color: #990000;
+	display: inline-block;
+	opacity: 0.8;
+	transition-duration: 0.3s;
+	}
+	.event-card:hover{
+		opacity: 1;
+		transform: scale(1.1);
+
+	}
+	p{
+		margin:11px;
+	}
+	.wrapper{
+		/*border: 1px solid black;*/
+		margin: 0 auto;
+		margin-top: -10px;
+		padding: 0px 20px;
+		height: 500px;
+		/*width: 100%;*/
+
+	}
+	.btn{
+		font-size: 26px;
+		background-color: #990000;
+		color: white;
+		height: 35px;
+		width: 20%;
+		margin:0 auto;
+		margin-top: 10px;  
+		margin-right: 10px;
+		/*border-radius: 10px;*/
+		opacity: 1.5;
+		transition-duration: 0.3s;
+		display: inline-block;
+	}
+	.btn:hover{
+		transform: scale(1.1);
+		cursor: pointer;
+	}
+	.formfield{
+		text-align: center;
+	}
+	label{
+		color:white;
+	}
+</style>
+<link href="https://fonts.googleapis.com/css?family=Audiowide|Monoton|Neucha|Quicksand|Roboto" rel="stylesheet">
+<body>
+		<center><p style="font-family:sans-serif; font-size: 50px; font-weight: normal;position: sticky;margin-top: -100px;margin: 10px; z-index: 1000;">ADD CLASS</p></center>
+	
+	<div class="formfield">
+		<form action = "{{url_for('admin')}}" method = "POST">
+			<label for="classid">CLASS ID : </label><input type="number" name="classid"><br>
+			<label for="classtitle">CLASS TITLE:</label> <input type="text" name="classtitle" placeholder="CLASS TITLE"><br>
+			<label for="classtype">CLASS TYPE: </label><input type="text" name="classtype" placeholder="CLASS TYPE"><br>
+			<label for="classdate">CLASS DATE :</label><input type="date" name="classdate"><br>
+			<label for="classtime"> EVENT TIME : </label><input type="text" name="classtime" placeholder="HH:MM:SS"><br>
+			<label for="info"> INFO : </label><input type="text" name="info" placeholder="INFO"><br>
+			<label for="location">LOCATION : </label><input type="text" name="location" placeholder="LOCATION"><br>
+			<label for="contact">CONTACT : </label><input type="text" name="contact" placeholder="CONTACT"><br>
+			<label for="lecturer">LECTURER : </label><input type="text" name="lecturer" placeholder="LECTURER"><br>
+			<label for="aboutlecturer">ABOUT PERFORMER :</label><input type="text" name="aboutlecturer" placeholder="ABOUT LECTURER"><br>
+			<span><input type="submit" name="Submit" class="btn" value="ADD"></span>
+		</form>
+	</div>
+
+</body>
+</html>

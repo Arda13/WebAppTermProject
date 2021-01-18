@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Fill</title>
+</head>
+<link href="https://fonts.googleapis.com/css?family=Audiowide|Monoton|Neucha|Quicksand|Roboto" rel="stylesheet">
+<style>
+	body{
+		font-family: 'Quicksand',cursive;
+		background-image: url('static/Images/background.jpg');
+		background-color: rgba(0,0,0,0.6);
+		background-blend-mode: overlay;
+		background-size: cover;
+	}
+	.wrapper{
+		position: absolute;
+		margin-left: 39%;
+		display: inline-block;
+	}
+	.seat{
+		display: inline-block;
+		height: 120px;
+		width: 120px;
+		border:1px solid red;
+		text-align: center;
+		margin-top: 6px;
+		padding-top: 3%;
+		opacity: 0.5;
+		color:white;
+	}
+	.clickable{
+		border: 1px solid green;
+		background-color: transparent;
+		opacity: 1;
+	}
+
+	.clickable:hover{
+		background-color: green;
+	}
+	.prices{
+		position: absolute;
+		right:-135%;
+		top: 20%;
+		transform: scale(1.5);
+	}
+	.formfield{
+		/*display: inline-block;*/
+		margin-top: 10px;
+		margin-left: 6%;
+	}
+
+</style>
+<body>
+	<center><p style="font-family: sans-serif; font-size: 50px; font-weight: normal;position: sticky;margin-top: -100px;margin: 10px 550px; z-index: 1000; color: white;">SELECT YOUR SEAT</p></center>
+	<div class="wrapper">
+	{% for seat in seats %}
+		{% if seat[2][1]=='1' %}
+			<br>
+		{% else %}
+		{% endif %}
+		{% if seat[3] == 0 %}	
+			<div id = 'seatselect' class="seat clickable">{{seat[2]}}</div>
+		{% else %}
+			<div id = 'seatselect' class="seat">{{seat[2]}}</div>
+		{% endif %}
+	{% endfor %}
+	</div>
+	<div class="formfield">
+		<form action = "{{url_for('bookseat')}}" method = "POST">
+			<input type="text" name="eventid" value="{{eventid}}" style="display: none;">
+			<label style="color: white;" for="seatno">SEAT NO:</label> <input type="text" name="seatno" placeholder="SEAT NUMBER"><br><br>
+			<label style="color: white;" for="name">NAME : </label><input type="text" name="name" placeholder="STUDENT NAME"><br><br>
+			<label style="color: white;" for="student_mail">STUDENT MAIL : </label><input type="text" name="student_mail" placeholder="STUDENT MAIL"><br><br>
+			<label style="color: white;" for="student_number"> STUDENT NO : </label><input type="number" name="student_number" placeholder="STUDENT NO"><br><br>
+			<span><input type="submit" name="Submit"></span>
+		</form>
+	</div>
+</body>	
+<!-- <script type="text/javascript">
+	document.getElementById('seatselect').onclick = function(){
+		var l = this.innerHTML.value;
+		console.log(l);
+	}
+</script> -->
+</html>
