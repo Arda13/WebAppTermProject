@@ -1,16 +1,24 @@
 from flask import Flask, flash, redirect, url_for, render_template, request, session, abort
 # from forms import RegistrationForm, LoginForm, BookForm 
 import datetime
-import os
+import os.path
 import sqlite3
-db = 'Database/db.sqlite3'
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db = os.path.join(BASE_DIR, 'Database/db.sqlite3')
+
+# db = 'Database/db.sqlite3'
 conn = sqlite3.connect(db)
 app = Flask(__name__)
-app.secret_key= ''
+app.secret_key= 'supersecretkey'
 
 # import secrets in python3 
 # secrets.token_hex(16)
 cur = conn.cursor()
+  
+  
+conn.execute('CREATE TABLE IF NOT EXISTS Users (Name text NOT NULL, Email text NOT NULL, Password text NOT NULL, Contact integer NOT NULL)')
+
 
 cur.execute('''CREATE TABLE IF NOT EXISTS classes (event_id integer NOT NULL UNIQUE,
 				class_title varchar(20) NOT NULL,
@@ -51,13 +59,64 @@ def check_tables():
 		var = cur.fetchall()
 		print(var)
 
-@app.route('/')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+  if request.method == 'POST':
+    nm = request.form['nm']
+    contact = request.form['contact']
+    email = request.form['email']
+    password = request.form['password']
+         
+    with sqlite3.connect(db) as con:
+      cur = con.cursor()
+      #check if User already present
+      cur.execute("SELECT Email FROM Users WHERE Email=(?)",[(email)])
+      data = cur.fetchall()
+      if len(data)>0:
+        print('User already exists')
+        user_exists=1
+      else:
+        print("User not found, register new user")
+        user_exists=0
+        cur.execute("INSERT INTO Users (Name,Email,Password,Contact) VALUES (?,?,?,?)",(nm,email,password,contact) )
+        
+  return render_template('login.html',user_exists=user_exists, invalid = None, logged_out=None)
+
+@app.route('/',  methods=['GET', 'POST'])
+def login():
+  invalid = None
+  if request.method == 'POST':
+    email = request.form['email']
+    password = request.form['password']     
+    with sqlite3.connect(db) as con:
+      cur = con.cursor()
+      #Validate user credentails from database
+      cur.execute("SELECT Email FROM Users WHERE Email=(?) AND Password=(?)",[(email),(password)])
+      data = cur.fetchall()
+      if len(data)>0:
+        print('Login Success')
+        # Fetch name of user
+        cur.execute("SELECT Name FROM Users WHERE Email=(?) AND Password=(?)",[(email),(password)])
+        nm = cur.fetchall()
+        nm=nm[0][0]
+        # Store User details in Session and log in user
+        session['nm'] = nm
+        session['email'] = email
+        session['logged_out'] = None
+        return redirect(url_for('home'))
+      else:
+        print("Invalid Login")
+        invalid=1  
+  return render_template('login.html',user_exists=None, invalid = invalid, logged_out=None)
+
+@app.route('/home')
 def home():
 	with sqlite3.connect(db) as conn:
 		cur = conn.cursor()
 		cur.execute("SELECT * FROM classes ORDER BY class_data")
 		events = cur.fetchall()
-
+	
+	session['logged_out']= 1
 	return render_template('home.html',events = events)
 
 @app.route('/seats',methods = ['GET','POST'])
@@ -134,7 +193,7 @@ def admin():
 			cur.execute("INSERT INTO seats VALUES(?,?,?,?)",[classid,"lab","C3",0])
 			cur.execute("INSERT INTO seats VALUES(?,?,?,?)",[classid,"lab","C4",0])
 			conn.commit()
-		return redirect("/")
+		return redirect("/home")
 	return render_template('admin.html')
 
 @app.route('/lecturer',methods = ['GET','POST'])
